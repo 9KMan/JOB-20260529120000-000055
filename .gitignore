@@ -1,0 +1,95 @@
+# =============================================================================
+# AgentFlow Git Ignore
+# Excludes proposal and task files to prevent accidental commits
+# =============================================================================
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node
+node_modules/
+.npm
+.yarn
+.next/
+out/
+dist/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Logs
+*.log
+logs/
+
+# Local development
+*.local
+.dockerignore
+
+# Build artifacts
+*.bundle
+*.js.map
+
+# =============================================================================
+# EXCLUDED FILES - These files should NOT be gitignored
+# Uncomment lines below to explicitly keep tracking of:
+# =============================================================================
+# !PROPOSAL.md
+# !COVER_LETTER.txt
+# !SPEC.txt
+# !TASK.txt
+# !pid
+# !role
+# !worker.log
+
+# But for clarity, we explicitly DO NOT ignore these to ensure they're never committed
+# The files below are excluded from being tracked
+PROPOSAL.md
+COVER_LETTER.txt
+SPEC.txt
+TASK.txt
+pid
+role
+worker.log

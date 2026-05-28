@@ -1,0 +1,17 @@
+apiVersion: v2
+name: agentflow
+description: AgentFlow - Multi-agent orchestration platform with human-in-the-loop approvals
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - agentflow
+  - orchestration
+  - ai-agents
+  - langgraph
+  - human-in-the-loop
+maintainers:
+  - name: AgentFlow Team
+    email: team@agentflow.dev
+sources:
+  - https://github.com/agentflow/agentflow

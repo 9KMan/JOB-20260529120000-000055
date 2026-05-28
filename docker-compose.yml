@@ -1,0 +1,175 @@
+version: '3.8'
+
+services:
+  # Orchestrator Service - LangGraph-based workflow orchestration
+  orchestrator:
+    build:
+      context: ./orchestrator
+      dockerfile: Dockerfile
+    container_name: agentflow_orchestrator
+    ports:
+      - "8001:8001"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHON_ENV=development
+      - REDIS_URL=redis://redis:6379/0
+      - POSTGRES_URL=postgresql://agentflow:agentflow_secret@postgres:5432/agentflow
+      - WEAVIATE_URL=http://weaviate:8080
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
+    volumes:
+      - ./orchestrator:/app
+    depends_on:
+      - postgres
+      - redis
+      - weaviate
+      - minio
+    networks:
+      - agentflow_network
+    restart: unless-stopped
+
+  # API Service - FastAPI backend
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: agentflow_api
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHON_ENV=development
+      - DATABASE_URL=postgresql+asyncpg://agentflow:agentflow_secret@postgres:5432/agentflow
+      - REDIS_URL=redis://redis:6379/1
+      - WEAVIATE_URL=http://weaviate:8080
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
+      - ORCHESTRATOR_URL=http://orchestrator:8001
+    volumes:
+      - ./api:/app
+    depends_on:
+      - postgres
+      - redis
+      - weaviate
+      - minio
+    networks:
+      - agentflow_network
+    restart: unless-stopped
+
+  # Frontend Service - Next.js 14
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: agentflow_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_ORCHESTRATOR_URL=http://localhost:8001
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - api
+    networks:
+      - agentflow_network
+    restart: unless-stopped
+
+  # PostgreSQL 15 with Row-Level Security
+  postgres:
+    image: postgres:15-alpine
+    container_name: agentflow_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=agentflow
+      - POSTGRES_PASSWORD=agentflow_secret
+      - POSTGRES_DB=agentflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    command: postgres -c row_security=on
+    networks:
+      - agentflow_network
+    restart: unless-stopped
+
+  # Redis 7 for session store
+  redis:
+    image: redis:7-alpine
+    container_name: agentflow_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - agentflow_network
+    restart: unless-stopped
+
+  # Weaviate Vector Store
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.24.0
+    container_name: agentflow_weaviate
+    ports:
+      - "8080:8080"
+    environment:
+      - QUERY_DEFAULTS_LIMIT=25
+      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+      - PERSISTENCE_DATA_PATH=/var/lib/weaviate
+      - ENABLE_MODULES=text2vec-openai,text2vec-cohere
+      - CLUSTER_HOSTNAME=node1
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    networks:
+      - agentflow_network
+    restart: unless-stopped
+
+  # MinIO S3-compatible object storage
+  minio:
+    image: minio/minio:latest
+    container_name: agentflow_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY:-minioadmin}
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - agentflow_network
+    restart: unless-stopped
+
+  # MinIO Console (optional utility)
+  minio-console:
+    image: minio/mc:latest
+    container_name: agentflow_minio_console
+    depends_on:
+      - minio
+    networks:
+      - agentflow_network
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set local http://minio:9000 minioadmin minioadmin;
+      mc mb local/agentflow-bucket --ignore-existing;
+      mc anonymous set public local/agentflow-bucket;
+      exit 0;
+      "
+    restart: on-failure
+
+volumes:
+  postgres_data:
+  redis_data:
+  weaviate_data:
+  minio_data:
+
+networks:
+  agentflow_network:
+    driver: bridge

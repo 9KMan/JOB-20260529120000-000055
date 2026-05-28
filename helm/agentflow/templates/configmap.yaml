@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "agentflow.fullname" . }}-configmap
+  labels:
+    {{- include "agentflow.labels" . | nindent 4 }}
+data:
+  TENANT_ID: {{ .Values.tenant.id | quote }}
+  TENANT_NAME: {{ .Values.tenant.name | quote }}
+  MAX_AGENTS: {{ .Values.tenant.maxAgents | quote }}
+  MAX_CONCURRENT_WORKFLOWS: {{ .Values.tenant.maxConcurrentWorkflows | quote }}
+  RETENTION_DAYS: {{ .Values.tenant.retentionDays | quote }}
+  REDIS_HOST: {{ include "agentflow.fullname" . }}-redis
+  REDIS_PORT: {{ .Values.redis.service.port | quote }}
+  WEAVIATE_HOST: {{ include "agentflow.fullname" . }}-weaviate
+  WEAVIATE_PORT: {{ .Values.weaviate.service.port | quote }}
+  ORCHESTRATOR_HOST: {{ include "agentflow.fullname" . }}-orchestrator
+  ORCHESTRATOR_PORT: {{ .Values.orchestrator.service.port | quote }}
+  API_HOST: {{ include "agentflow.fullname" . }}-api
+  API_PORT: {{ .Values.api.service.port | quote }}
+  LOG_LEVEL: {{ .Values.config.logLevel | default "INFO" | quote }}
+  CORS_ORIGINS: {{ .Values.config.corsOrigins | default "*" | quote }}
+  MAX_MESSAGE_LENGTH: {{ .Values.config.maxMessageLength | default "10000" | quote }}
+  STREAM_TIMEOUT_SECONDS: {{ .Values.config.streamTimeoutSeconds | default "300" | quote }}
