@@ -7,6 +7,8 @@
 
 
 
+
+
 ---
 
 ## Business Problem Solved
@@ -19,6 +21,11 @@ This platform solves that by:
 • **Full audit traceability** — Every decision, action, and approval is logged, giving operations managers a complete picture of what the automation did and why.
 
 **Measurable outcome:** 80%+ reduction in manual data handling tasks; operations teams onboard new workflows without developer involvement.
+
+---
+
+
+---
 
 ---
 
@@ -123,17 +130,6 @@ Proprietary — All rights reserved
 
 
 ---
-
-## Business Problem Solved
-
-Small-to-medium businesses rely on brittle automation scripts that break when inputs change, require technical staff to maintain, and leave no traceable record of what they did or why. Operations teams waste hours on workarounds instead of focusing on higher-value tasks.
-
-This platform solves that by:
-• **Replacing scripts with an intelligent agent workforce** — A central orchestrator dispatches specialized subagents that reason about each task, remember context, and know when to ask a human before acting.
-• **Giving non-technical staff control** — Approval gates let operators review and green-light external actions before they happen, without touching code or configuration.
-• **Full audit traceability** — Every decision, action, and approval is logged, giving operations managers a complete picture of what the automation did and why.
-
-**Measurable outcome:** 80%+ reduction in manual data handling tasks; operations teams onboard new workflows without developer involvement.
 
 ---
 
