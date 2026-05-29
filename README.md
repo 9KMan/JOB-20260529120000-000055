@@ -2,11 +2,6 @@
 
 ---
 
-## Business Problem Solved
-
-[PLACEHOLDER: Summarize the core business value from SPEC.md in 2-3 concise bullet points — what problem does this solve, for whom, and what measurable outcome it delivers. Example: "• Eliminates manual SKU reconciliation across 3 warehouse systems, saving ~15 hrs/week for operations team"]
-
----
 
 # AgentFlow — Multi-Agent Workflow Automation Platform
 
@@ -107,6 +102,24 @@ Row-level security (RLS) in PostgreSQL + tenant_id namespace prefixes in Redis/W
 Proprietary — All rights reserved
 
 ## 🗣 Communication & Delivery Style
+
+
+---
+
+## Business Problem Solved
+
+Small-to-medium businesses rely on brittle automation scripts that break when inputs change, require technical staff to maintain, and leave no traceable record of what they did or why. Operations teams waste hours on workarounds instead of focusing on higher-value tasks.
+
+This platform solves that by:
+• **Replacing scripts with an intelligent agent workforce** — A central orchestrator dispatches specialized subagents that reason about each task, remember context, and know when to ask a human before acting.
+• **Giving non-technical staff control** — Approval gates let operators review and green-light external actions before they happen, without touching code or configuration.
+• **Full audit traceability** — Every decision, action, and approval is logged, giving operations managers a complete picture of what the automation did and why.
+
+**Measurable outcome:** 80%+ reduction in manual data handling tasks; operations teams onboard new workflows without developer involvement.
+
+---
+
+
 
 I prioritize clear, structured async communication (chat/email) to ensure 
 technical precision across timezones. 
